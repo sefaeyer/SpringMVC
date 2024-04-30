@@ -1,6 +1,7 @@
 package com.tpe.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class Student {
 
     @NotNull(message = "Please provide grade!")//null kabul etmez
     @Column(nullable = false)
+    @Max(100)
     private Integer grade;
 
     private LocalDateTime createDate=LocalDateTime.now();
