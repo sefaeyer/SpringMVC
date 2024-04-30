@@ -37,13 +37,30 @@ public class StudentRepository implements IStudentRepository{
         session.close();
     }
 
+
+    //4-b
     @Override
     public void delete(Student student) {
+        Session session= sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+
+        session.delete(student);
+
+        tx.commit();
+        session.close();
 
     }
 
+    //3-b
     @Override
     public Optional<Student> findById(Long id) {
-        return Optional.empty();
+        Session session= sessionFactory.openSession();
+        Student student=session.get(Student.class,id);
+
+        Optional<Student> optional=Optional.ofNullable(student); //Attantion!
+
+        session.close();
+
+        return optional;
     }
 }

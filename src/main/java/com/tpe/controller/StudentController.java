@@ -1,15 +1,13 @@
 package com.tpe.controller;
 
 import com.tpe.domain.Student;
+import com.tpe.exception.StudentNotFoundException;
 import com.tpe.service.IStudentService;
 import com.tpe.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -34,6 +32,7 @@ public class StudentController {
 
 
     //http:localhost:8080/SpringMvc/students/hi + GET
+    //@RequestMapping("/students")
     @GetMapping("/hi")
     public ModelAndView sayHi() {
         ModelAndView mav = new ModelAndView();
@@ -77,7 +76,7 @@ public class StudentController {
     // http://localhost:8080/SpringMvc/students/saveStudent + POST
     @PostMapping("/saveStudent")
     public String addStudent(@Valid @ModelAttribute("student") Student student, BindingResult bindingResult){
-    //----------------------(--------------/(OPSIYONEL)/---------------)//
+    //----------------------(...................../(OPSIYONEL)/............................................)//
 
         if(bindingResult.hasErrors()){
             return "studentForm";
@@ -90,20 +89,37 @@ public class StudentController {
 
 
     //3-mevcut ogrenciyi guncelleme
-    //http://localhost:8081/SpringMVC/students/update?id=1
+    //http://localhost:8081/SpringMVC/students/update?id=1 + GET
+    @GetMapping("/update")
+    public ModelAndView sendFormForUpdate(@RequestParam("id") Long identity){ //1
+
+        Student foundstudent=service.findStudentById(identity);
+
+        ModelAndView mav=new ModelAndView();
+        mav.addObject("student",foundstudent);
+        mav.setViewName("studentForm");
+        return mav;
+    }
 
 
     //4-mevcut ogrenciyi silme
-    //http://localhost:8081/SpringMVC/students/delete/1
+    //http://localhost:8081/SpringMVC/students/delete/1 + GET
+    @GetMapping("/delete/{id}")
+    public String deleteStudent(@PathVariable("id") Long identity){ //@PathVariable -->  bu sekilde de
+                                                                    // kullaniabilir. cunku bir tane degisken var
 
+        service.deleteStudent(identity);
+        return  "redirect:/students";
 
+    }
 
-
-
-
-
-
-
+    @ExceptionHandler(StudentNotFoundException.class)
+    public ModelAndView handleException(Exception ex){
+        ModelAndView mav=new ModelAndView();
+        mav.addObject("message",ex.getMessage());
+        mav.setViewName("notFound");
+        return mav;
+    }
 
 
 }

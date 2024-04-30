@@ -15,7 +15,7 @@
 	align-items: center;
 	flex-direction: column;
     font-size: 25rem;
-    color:purple;
+    color:red;
     background-color: gray;
   }
 </style>
